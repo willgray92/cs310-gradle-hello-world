@@ -11,12 +11,13 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
+sourceCompatibility = 1.7
 version = '1.0'
 
 jar {
     manifest {
         attributes 'Implementation-Title': 'Hello World', 
-                   'Implementation-Version': version, 
+                   'Implementation-Version': archiveVersion, 
                    'Main-Class': 'edu.jsu.mcis.HelloWorld'
     }
 }
@@ -33,6 +34,24 @@ jacocoTestReport {
     group = 'Reporting'
     description = 'Generate Jacoco coverage reports after running tests.'
     additionalSourceDirs(files(sourceSets.main.allJava.srcDirs))
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+if(hasProperty("Xlint:unchecked")) {
+    tasks.withType(JavaCompile) { 
+        options.compilerArgs << "-Xlint:unchecked" 
+    }
 }
 
 runrobot.debugfile = 'debug.log'
